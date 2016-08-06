@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TrackerManager : NSObject
+@class NTHTTPModel;
+@interface NTTrackerManager : NSObject
 
 + (instancetype)shareInstance;
 - (void)enable;
+
+- (void)addHTTPModel:(NTHTTPModel *)model;
 
 @end

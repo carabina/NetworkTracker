@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "TrackerManager.h"
+#import "NTTrackerManager.h"
 
 @interface AppDelegate ()
 
@@ -18,7 +18,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    [[TrackerManager shareInstance]enable];
+    [[NTTrackerManager shareInstance]enable];
     return YES;
 }
 

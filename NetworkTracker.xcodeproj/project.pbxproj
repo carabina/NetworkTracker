@@ -15,8 +15,9 @@
 		107A106E1D5365E7001002DB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 107A106C1D5365E7001002DB /* LaunchScreen.storyboard */; };
 		107A10791D5365E7001002DB /* NetworkTrackerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 107A10781D5365E7001002DB /* NetworkTrackerTests.m */; };
 		107A10841D5365E7001002DB /* NetworkTrackerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 107A10831D5365E7001002DB /* NetworkTrackerUITests.m */; };
-		107A10941D536622001002DB /* TrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 107A10931D536622001002DB /* TrackerManager.m */; };
-		107A10981D53699D001002DB /* ProxyDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 107A10971D53699D001002DB /* ProxyDelegate.m */; };
+		107A10941D536622001002DB /* NTTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 107A10931D536622001002DB /* NTTrackerManager.m */; };
+		107A10981D53699D001002DB /* NTProxyDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 107A10971D53699D001002DB /* NTProxyDelegate.m */; };
+		1099DE3A1D542A1E00EC1B37 /* NTHTTPModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1099DE391D542A1E00EC1B37 /* NTHTTPModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,10 +54,12 @@
 		107A107F1D5365E7001002DB /* NetworkTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		107A10831D5365E7001002DB /* NetworkTrackerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkTrackerUITests.m; sourceTree = "<group>"; };
 		107A10851D5365E7001002DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		107A10921D536622001002DB /* TrackerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrackerManager.h; path = NetworkTracker/TrackerManager.h; sourceTree = SOURCE_ROOT; };
-		107A10931D536622001002DB /* TrackerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TrackerManager.m; path = NetworkTracker/TrackerManager.m; sourceTree = SOURCE_ROOT; };
-		107A10961D53699D001002DB /* ProxyDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProxyDelegate.h; path = ../ProxyDelegate.h; sourceTree = "<group>"; };
-		107A10971D53699D001002DB /* ProxyDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyDelegate.m; path = ../ProxyDelegate.m; sourceTree = "<group>"; };
+		107A10921D536622001002DB /* NTTrackerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTTrackerManager.h; path = NetworkTracker/NTTrackerManager.h; sourceTree = SOURCE_ROOT; };
+		107A10931D536622001002DB /* NTTrackerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTTrackerManager.m; path = NetworkTracker/NTTrackerManager.m; sourceTree = SOURCE_ROOT; };
+		107A10961D53699D001002DB /* NTProxyDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTProxyDelegate.h; path = ../NTProxyDelegate.h; sourceTree = "<group>"; };
+		107A10971D53699D001002DB /* NTProxyDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTProxyDelegate.m; path = ../NTProxyDelegate.m; sourceTree = "<group>"; };
+		1099DE381D542A1E00EC1B37 /* NTHTTPModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTHTTPModel.h; sourceTree = "<group>"; };
+		1099DE391D542A1E00EC1B37 /* NTHTTPModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTHTTPModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,10 +153,12 @@
 		1099DE371D539C0A00EC1B37 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				107A10921D536622001002DB /* TrackerManager.h */,
-				107A10931D536622001002DB /* TrackerManager.m */,
-				107A10961D53699D001002DB /* ProxyDelegate.h */,
-				107A10971D53699D001002DB /* ProxyDelegate.m */,
+				107A10921D536622001002DB /* NTTrackerManager.h */,
+				107A10931D536622001002DB /* NTTrackerManager.m */,
+				107A10961D53699D001002DB /* NTProxyDelegate.h */,
+				107A10971D53699D001002DB /* NTProxyDelegate.m */,
+				1099DE381D542A1E00EC1B37 /* NTHTTPModel.h */,
+				1099DE391D542A1E00EC1B37 /* NTHTTPModel.m */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -291,10 +296,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				107A10981D53699D001002DB /* ProxyDelegate.m in Sources */,
+				107A10981D53699D001002DB /* NTProxyDelegate.m in Sources */,
 				107A10661D5365E7001002DB /* ViewController.m in Sources */,
 				107A10631D5365E7001002DB /* AppDelegate.m in Sources */,
-				107A10941D536622001002DB /* TrackerManager.m in Sources */,
+				1099DE3A1D542A1E00EC1B37 /* NTHTTPModel.m in Sources */,
+				107A10941D536622001002DB /* NTTrackerManager.m in Sources */,
 				107A10601D5365E7001002DB /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

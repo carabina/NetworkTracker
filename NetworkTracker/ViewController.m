@@ -7,12 +7,13 @@
 //
 
 #import "ViewController.h"
+#import <objc/runtime.h>
 
-@interface ViewController ()<NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@interface ViewController ()<NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSURLSessionDataDelegate, NSURLSessionDelegate>
 
 @property (nonatomic, strong) NSURL *url;
 @property (nonatomic, strong) NSURLRequest *request;
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, weak) IBOutlet UIWebView *webView;
 
 @end
 
@@ -50,7 +51,6 @@
             NSLog(@"%@",error);
         }
     });
-
 }
 - (IBAction)connection_initConnection:(id)sender {
     NSURLConnection *connection = [[NSURLConnection alloc]initWithRequest:_request delegate:self];
@@ -58,21 +58,54 @@
 }
 #pragma clang diagnostic pop
 
+- (IBAction)URLsession:(id)sender {
+    NSURL *url = [NSURL URLWithString:@"http://www.baidu.com"];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSURLSession *urlsession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[[NSOperationQueue alloc]init]];
 
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSessionDataTask *datatask =[urlsession dataTaskWithURL:url];
+    [datatask resume];
+}
+- (IBAction)URLSessionWithHandler:(id)sender {
+    NSURL *url = [NSURL URLWithString:@"http://www.baidu.com"];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSURLSession *urlsession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[[NSOperationQueue alloc]init]];
+    //    NSURLSession *urlsession = [NSURLSession sessionWithConfiguration:config];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLSessionDataTask *datatask = [urlsession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if(error) {
+            NSLog(@"error: %@", error);
+        }
+        else {
+            NSLog(@"Success");
+        }
+    }];
+    [datatask resume];
+}
 
+- (IBAction)downloadSession:(id)sender {
+    NSURL *url = [NSURL URLWithString:@"http://xmind-dl.oss-cn-qingdao.aliyuncs.com/xmind-7-update1-macosx.dmg"];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *urlsession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[[NSOperationQueue alloc]init]];
+    
+    NSURLSessionDownloadTask *downloadTask = [urlsession downloadTaskWithURL:url];
+    [downloadTask resume];
+    
+}
 
-
-
-#pragma mark - NSURLConnectionDalegate
+- (void)dealloc {
+    NSLog(@"ViewController dealloc");
+}
+#pragma mark - NSURLConnectionDelegate
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     
 }
 
 - (nullable NSCachedURLResponse*)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
-    
-    
-    
-    
     
     
     NSLog(@"123");
@@ -86,4 +119,16 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
 }
+
+#pragma mark - NSURLSessionDelegate
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    [session finishTasksAndInvalidate];
+//    session = nil;
+//    task = nil;
+}
+
 @end

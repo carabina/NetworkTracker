@@ -8,9 +8,10 @@
 
 #import "AppDelegate.h"
 #import "NTTrackerManager.h"
+#import <FBMemoryProfiler/FBMemoryProfiler.h>
 
 @interface AppDelegate ()
-
+@property (nonatomic, strong) FBMemoryProfiler *memoryProfiler;
 @end
 
 @implementation AppDelegate
@@ -19,6 +20,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [[NTTrackerManager shareInstance]enable];
+    
+    FBMemoryProfiler *memoryProfiler = [FBMemoryProfiler new];
+    [memoryProfiler enable];
+    
+    // Store memory profiler somewhere to extend it's lifetime
+    _memoryProfiler = memoryProfiler;
+    
     return YES;
 }
 

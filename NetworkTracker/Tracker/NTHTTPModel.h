@@ -13,6 +13,7 @@
 @property (nonatomic, strong, nullable) NSString *startDateString;
 @property (nonatomic, assign) NSTimeInterval startTime;
 @property (nonatomic, assign) NSTimeInterval endTime;
+@property (nonatomic, assign) NSTimeInterval DurationTime;
 
 //request
 @property (nonatomic, strong, nullable) NSString *requestURLString;

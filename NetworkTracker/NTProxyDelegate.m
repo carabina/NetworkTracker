@@ -29,7 +29,22 @@
     if (aSelector == @selector(connection:didReceiveResponse:)) {
         return YES;
     }
-    return [self.hookDelegate respondsToSelector:aSelector];
+    if (aSelector == @selector(connection:didReceiveResponse:)) {
+        return YES;
+    }
+    if (aSelector == @selector(connectionDidFinishLoading:)) {
+        return YES;
+    }
+    if (aSelector == @selector(URLSession:dataTask:didReceiveData:)) {
+        return YES;
+    }
+    if (aSelector == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
+        return YES;
+    }
+    if (aSelector == @selector(URLSession:task:didCompleteWithError:)) {
+        return YES;
+    }
+    return [self.hookDelegate respondsToSelector:aSelector] ;
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
@@ -45,6 +60,7 @@
 }
 
 - (void)saveModel {
+    [_httpModel setEndTime:[NSDate date].timeIntervalSince1970];
     [_httpModel setResponse:self.response];
     [_httpModel setData:self.data];
     
@@ -75,5 +91,32 @@
     if ([self.hookDelegate respondsToSelector:@selector(connectionDidFinishLoading:)]) {
         [self.hookDelegate connectionDidFinishLoading:connection];
     }
+}
+
+#pragma mark - NSURLSessionDataDelegate
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
+    self.response = (NSHTTPURLResponse *)response;
+    completionHandler(NSURLSessionResponseAllow);
+    
+    if ([self.hookDelegate respondsToSelector:@selector(URLSession:dataTask:didReceiveResponse:completionHandler:)]) {
+        [self.hookDelegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    [self.data appendData:data];
+    
+    if ([self.hookDelegate respondsToSelector:@selector(URLSession:dataTask:didReceiveData:)]) {
+        [self.hookDelegate URLSession:session dataTask:dataTask didReceiveData:data];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    [self saveModel];
+    
+    if ([self.hookDelegate respondsToSelector:@selector(URLSession:task:didCompleteWithError:)]) {
+        [self.hookDelegate URLSession:session task:task didCompleteWithError:error];
+    }
+    [session setProxyDelegate:nil];
 }
 @end

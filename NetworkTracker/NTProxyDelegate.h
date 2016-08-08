@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "NTHTTPModel.h"
 
-@interface NTProxyDelegate : NSObject<NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@interface NTProxyDelegate : NSObject<NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, weak) id hookDelegate;
 @property (nonatomic, strong) NTHTTPModel *httpModel;

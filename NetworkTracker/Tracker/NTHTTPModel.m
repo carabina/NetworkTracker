@@ -93,7 +93,7 @@
             self.receiveJSONData = xmlString;//example http://webservice.webxml.com.cn/webservices/qqOnlineWebService.asmx/qqCheckOnline?qqCode=2121
         }
     }
-
+    self.DurationTime = (_endTime - _startTime);
 }
 
 #pragma mark - Utils

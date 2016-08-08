@@ -86,6 +86,64 @@
 @end
 
 
+@implementation NSURLSession (xzj_networkTracker)
+
+- (void)setProxyDelegate:(NTProxyDelegate *)proxyDelegate {
+    objc_setAssociatedObject(self, @selector(proxyDelegate), proxyDelegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NTProxyDelegate *)proxyDelegate {
+    NTProxyDelegate *proxyDelegate = objc_getAssociatedObject(self, _cmd);
+    return proxyDelegate;
+}
+
++ (NSURLSession *)xzj_sessionWithConfiguration:(NSURLSessionConfiguration *)configuration delegate:(id<NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
+    if (delegate) {
+        NTProxyDelegate *proxyDelegate = [NTProxyDelegate new];
+        proxyDelegate.hookDelegate = delegate;
+        NSURLSession *session = [self xzj_sessionWithConfiguration:configuration delegate:proxyDelegate delegateQueue:queue];
+        session.proxyDelegate = proxyDelegate;
+        
+        return session;
+    }
+    
+    return [self xzj_sessionWithConfiguration:configuration delegate:delegate delegateQueue:queue];
+}
+
+- (NSURLSessionDataTask *)xzj_dataTaskWithRequest:(NSURLRequest *)request completionHandler:(void (^)(NSData * _Nullable, NSURLResponse * _Nullable, NSError * _Nullable))completionHandler {
+    [self.proxyDelegate.httpModel setRequset:request];
+    if (completionHandler) {
+        void (^xzj_completionHandler)(NSData * _Nullable, NSURLResponse * _Nullable, NSError * _Nullable) = ^void(NSData *data, NSURLResponse *response, NSError *error) {
+            self.proxyDelegate.httpModel.endTime = [NSDate date].timeIntervalSince1970;
+            [self.proxyDelegate.httpModel setResponse:(NSHTTPURLResponse *)response];
+            [self.proxyDelegate.httpModel setData:data];
+            [[NTTrackerManager shareInstance]addHTTPModel:self.proxyDelegate.httpModel];
+            completionHandler(data, response, error);
+        };
+        
+        return [self xzj_dataTaskWithRequest:request completionHandler:xzj_completionHandler];
+    }
+    return [self xzj_dataTaskWithRequest:request completionHandler:completionHandler];
+
+}
+
+- (void)xzj_dealloc {
+    NSLog(@"NSURLSession dealloc");
+}
+
+@end
+
+@implementation NSURLSessionTask (xzj_networkTracker)
+
+- (void)xzj_resume {
+    NSURLSession *session = [self valueForKey:@"session"];
+    session.proxyDelegate.httpModel.startTime = [NSDate date].timeIntervalSince1970;
+    
+    [self xzj_resume];
+}
+
+@end
+
 @interface NTTrackerManager ()
 
 @property (nonatomic, strong) NSMutableArray *HTTPModels;
@@ -131,6 +189,7 @@
 }
 
 - (void)enable {
+    //NSURLConection
     [self swizzleSEL:@selector(start)
              withSEL:@selector(xzj_start)
            withClass:[NSURLConnection class]];
@@ -150,11 +209,28 @@
     [self swizzleSEL:@selector(sendAsynchronousRequest:queue:completionHandler:)
              withSEL:@selector(xzj_sendAsynchronousRequest:queue:completionHandler:)
            withClass:objc_getMetaClass("NSURLConnection")];
+    
+    //NSURLSession
+    [self swizzleSEL:@selector(sessionWithConfiguration:delegate:delegateQueue:)
+             withSEL:@selector(xzj_sessionWithConfiguration:delegate:delegateQueue:)
+           withClass:objc_getMetaClass("NSURLSession")];
+    
+    [self swizzleSEL:@selector(dataTaskWithRequest:completionHandler:)
+             withSEL:@selector(xzj_dataTaskWithRequest:completionHandler:)
+           withClass:[NSURLSession class]];
+    
+    [self swizzleSEL:sel_registerName("dealloc")
+             withSEL:@selector(xzj_dealloc)
+           withClass:[NSURLSession class]];
+    
+    //NSURLSessionTask
+    [self swizzleSEL:@selector(resume)
+             withSEL:@selector(xzj_resume)
+           withClass:objc_getClass("__NSCFLocalDataTask")];
 }
 
 - (void)addHTTPModel:(NTHTTPModel *)model {
-    [_HTTPModels addObject:model];
-    
+    [_HTTPModels addObject:model];    
 }
 @end
 
